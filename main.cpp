@@ -57,7 +57,7 @@ int lcs(string s1, string s2) {
 }
 
 int main(int argc, char *argv[]) {
-    Check if the program has 2 filenames as input
+    // Check if the program has 2 filenames as input
     if (argc != 3) {
         cout << "Please enter 2 filenames as arguments" << endl;
         return 1;
