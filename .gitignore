@@ -1,3 +1,9 @@
+# Binaries
 *a.out
+*difflocator
+
+# Data
 *.txt
+
+# Misc
 .vscode
