@@ -16,31 +16,58 @@ using std::string;
 #include <algorithm>
 using std::max;
 
+#include <vector>
+using std::vector;
+
 #include "Colors.h"
 
-int lcs(string s1, string s2) {
-    int m = s1.length();
-    int n = s2.length();
+// Function takes a list of lines from 2 files, returns the LCS lengths of the lines
+vector<vector<int>> LCS(vector<string> lines1, vector<string> lines2) {
+    int m = lines1.size();
+    int n = lines2.size();
 
-    // Create a 2D array to store the lengths of the longest common subsequence
-    int dp[m+1][n+1];
-    memset(dp, 0, sizeof(dp));
-
-    for(int i = 1; i <= m; i++) {
-        for(int j = 1; j <= n; j++) {
-            // If the last characters of the strings match, then add 1 to the length of the LCS (diagonal element)
-            if(s1[i - 1] == s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            }
-            // Else, take the max of the element above and the element to the left
-            else {
-                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+    // Create a 2D array with the lcs lengths of the lines
+    // TODO: more efficient implementation
+    vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+    for (int i = 1; i <= m; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            if (lines1[i-1] == lines2[j-1]) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            } else {
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
             }
         }
     }
 
-    return dp[m][n];
+    return dp;
 }
+
+// Regular LCS
+// int lcs(string s1, string s2) {
+//     int m = s1.length();
+//     int n = s2.length();
+
+//     // Create a 2D array to store the lengths of the longest common subsequence
+//     int dp[m+1][n+1];
+//     memset(dp, 0, sizeof(dp));
+
+//     for(int i = 1; i <= m; i++) {
+//         for(int j = 1; j <= n; j++) {
+//             // If the last characters of the strings match, then add 1 to the length of the LCS (diagonal element)
+//             if(s1[i - 1] == s2[j - 1]) {
+//                 dp[i][j] = dp[i - 1][j - 1] + 1;
+//             }
+//             // Else, take the max of the element above and the element to the left
+//             else {
+//                 dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+//             }
+//         }
+//     }
+
+//     return dp[m][n];
+// }
+
+
 
 int main(int argc, char *argv[]) {
     // Check if the program has 2 filenames as input
