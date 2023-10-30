@@ -7,11 +7,15 @@ using std::endl;
 #include <fstream>
 using std::ifstream;
 
+#include <sstream>
+using std::istringstream;
+
 #include <cstring>
 using std::memset;
 
 #include <string>
 using std::string;
+
 
 #include <algorithm>
 using std::max;
@@ -42,31 +46,26 @@ vector<vector<int>> LCS(vector<string> lines1, vector<string> lines2) {
     return dp;
 }
 
-// Regular LCS
-// int lcs(string s1, string s2) {
-//     int m = s1.length();
-//     int n = s2.length();
+void diff(string s1, string s2) {
+    // separate s1 into lines 
+    istringstream iss1(s1), iss2(s2);
 
-//     // Create a 2D array to store the lengths of the longest common subsequence
-//     int dp[m+1][n+1];
-//     memset(dp, 0, sizeof(dp));
+    string line;
+    vector<string> lines1, lines2;
 
-//     for(int i = 1; i <= m; i++) {
-//         for(int j = 1; j <= n; j++) {
-//             // If the last characters of the strings match, then add 1 to the length of the LCS (diagonal element)
-//             if(s1[i - 1] == s2[j - 1]) {
-//                 dp[i][j] = dp[i - 1][j - 1] + 1;
-//             }
-//             // Else, take the max of the element above and the element to the left
-//             else {
-//                 dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
-//             }
-//         }
-//     }
+    while (getline(iss1, line)) {
+        lines1.emplace_back(line);
+    }
 
-//     return dp[m][n];
-// }
+    while (getline(iss2, line)) {
+        lines2.emplace_back(line);
+    }
 
+    // Find the LCS lengths of the lines
+    vector<vector<int>> dp = LCS(lines1, lines2);
+
+    // Find and display the differences
+}
 
 
 int main(int argc, char *argv[]) {
