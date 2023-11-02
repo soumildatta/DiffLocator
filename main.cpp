@@ -68,6 +68,7 @@ void diff(string s1, string s2) {
 
     // Find and display the differences
     stack<string> lineStack;
+    Colors colors;
 
     int i = lines1.size(), j = lines2.size();
     while (i > 0 && j > 0) {
@@ -76,7 +77,6 @@ void diff(string s1, string s2) {
             --i;
             --j;
         } else if (dp[i-1][j] > dp[i][j-1]) { // If the line in file 1 is longer than the line in file 2
-
             lineStack.emplace("< " + lines1[i-1]);
             --i;
         } else { // If the line in file 2 is longer than the line in file 1
@@ -99,7 +99,17 @@ void diff(string s1, string s2) {
 
     // Print the stack
     while (!lineStack.empty()) {
-        cout << lineStack.top() << endl;
+        string currLine = lineStack.top();
+
+        if(currLine[0] == '<') {
+            colors.setRed();
+        } else if (currLine[0] == '>') {
+            colors.setGreen();
+        }
+        
+        cout << currLine << endl;
+
+        colors.setNormal();
         lineStack.pop();
     }
 }
@@ -143,6 +153,7 @@ int main(int argc, char *argv[]) {
 
     // string s1 = "AGGTAB";
     // string s2 = "GXTXAYB";
+
     diff(s1, s2);
 
     return 0;
