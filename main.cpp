@@ -2,7 +2,6 @@
 
 #include <iostream>
 using std::cout;
-using std::endl;
 
 #include <fstream>
 using std::ifstream;
@@ -107,7 +106,7 @@ void diff(string s1, string s2) {
             colors.setGreen();
         }
         
-        cout << currLine << endl;
+        cout << currLine << "\n";
 
         colors.setNormal();
         lineStack.pop();
@@ -118,7 +117,7 @@ void diff(string s1, string s2) {
 int main(int argc, char *argv[]) {
     // Check if the program has 2 filenames as input
     if (argc != 3) {
-        cout << "Please enter 2 filenames as arguments" << endl;
+        cout << "Please enter 2 filenames as arguments" << "\n";
         return 1;
     }
 
