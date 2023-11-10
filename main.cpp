@@ -1,45 +1,30 @@
-// Author: Soumil Datta
-
 #include <iostream>
-using std::cout;
-
-#include <fstream>
-using std::ifstream;
-
-#include <sstream>
-using std::istringstream;
-
-#include <cstring>
-using std::memset;
-
-#include <string>
-using std::string;
-
-#include <stack>
-using std::stack;
-
-#include <algorithm>
-using std::max;
-
 #include <vector>
-using std::vector;
+#include <string>
+#include <algorithm>
+using namespace std;
 
-#include "Colors.h"
+// Function to set the terminal color
+void setColor(const string& colorCode) {
+    cout << "\033[" << colorCode << "m";
+}
 
-// Function takes a list of lines from 2 files, returns the LCS lengths of the lines
-vector<vector<int>> LCS(vector<string> lines1, vector<string> lines2) {
-    int m = lines1.size();
-    int n = lines2.size();
+// Function to reset the terminal color to normal
+void resetColor() {
+    cout << "\033[0m";
+}
 
-    // Create a 2D array with the lcs lengths of the lines
-    // TODO: more efficient implementation
-    vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
-    for (int i = 1; i <= m; ++i) {
-        for (int j = 1; j <= n; ++j) {
-            if (lines1[i-1] == lines2[j-1]) {
-                dp[i][j] = dp[i-1][j-1] + 1;
+// Function to find the LCS table
+vector<vector<int>> LCS(const string& s1, const string& s2) {
+    int m = s1.size(), n = s2.size();
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (s1[i - 1] == s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
             } else {
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
     }
@@ -47,111 +32,46 @@ vector<vector<int>> LCS(vector<string> lines1, vector<string> lines2) {
     return dp;
 }
 
-void diff(string s1, string s2) {
-    // separate s1 into lines 
-    istringstream iss1(s1), iss2(s2);
+// Function to display differences using LCS
+void diff(const string& s1, const string& s2) {
+    vector<vector<int>> dp = LCS(s1, s2);
 
-    string line;
-    vector<string> lines1, lines2;
-
-    while (getline(iss1, line)) {
-        lines1.emplace_back(line);
-    }
-
-    while (getline(iss2, line)) {
-        lines2.emplace_back(line);
-    }
-
-    // Find the LCS lengths of the lines
-    vector<vector<int>> dp = LCS(lines1, lines2);
-
-    // Find and display the differences
-    stack<string> lineStack;
-    Colors colors;
-
-    int i = lines1.size(), j = lines2.size();
+    int i = s1.size(), j = s2.size();
     while (i > 0 && j > 0) {
-        // If the lines are the same, move on
-        if (lines1[i-1] == lines2[j-1]) {
-            --i;
-            --j;
-        } else if (dp[i-1][j] > dp[i][j-1]) { // If the line in file 1 is longer than the line in file 2
-            lineStack.emplace("< " + lines1[i-1]);
-            --i;
-        } else { // If the line in file 2 is longer than the line in file 1
-            lineStack.emplace("> " + lines2[j-1]);
-            --j;
+        if (s1[i - 1] == s2[j - 1]) {
+            cout << s1[i - 1];
+            i--; j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            setColor("31"); // Red for deletion
+            cout << s1[i - 1];
+            resetColor();
+            i--;
+        } else {
+            setColor("32"); // Green for addition
+            cout << s2[j - 1];
+            resetColor();
+            j--;
         }
     }
 
-    // If there are any remaining lines in file 1, add them to the stack
     while (i > 0) {
-        lineStack.emplace("< " + lines1[i-1]);
-        --i;
+        setColor("31"); // Red for deletion
+        cout << s1[i - 1];
+        resetColor();
+        i--;
     }
 
-    // If there are any remaining lines in file 2, add them to the stack
     while (j > 0) {
-        lineStack.emplace("> " + lines2[j-1]);
-        --j;
-    }
-
-    // Print the stack
-    while (!lineStack.empty()) {
-        string currLine = lineStack.top();
-
-        if(currLine[0] == '<') {
-            colors.setRed();
-        } else if (currLine[0] == '>') {
-            colors.setGreen();
-        }
-        
-        cout << currLine << "\n";
-
-        colors.setNormal();
-        lineStack.pop();
+        setColor("32"); // Green for addition
+        cout << s2[j - 1];
+        resetColor();
+        j--;
     }
 }
 
-
-int main(int argc, char *argv[]) {
-    // Check if the program has 2 filenames as input
-    if (argc != 3) {
-        cout << "Please enter 2 filenames as arguments" << "\n";
-        return 1;
-    }
-
-    Colors colors;
-    char *filename1 = argv[1];
-    char *filename2 = argv[2];
-
-    // Read from a file:
-    ifstream infile1(filename1);
-
-    string s1, s2;
-
-    char c;
-    while (infile1.get(c)) {
-        s1 += c;
-    }
-
-    // Read from second file 
-    ifstream infile2(filename2);
-    while (infile2.get(c)) {
-        s2 += c;
-    }
-
-    // close the ifstreams
-    infile1.close();
-    infile2.close();
-
-    // colors.setGreen();
-    // std::cout << "This is green text!" << std::endl;
-    // colors.setNormal();
-    // std::cout << "This is normal white text!" << std::endl;
-
-    // string s1 = "AGGTAB";
-    // string s2 = "GXTXAYB";
+int main() {
+    string s1 = "ACCGGTCGAGTGCGCGGAAGCCGGCCGAA";
+    string s2 = "GTCGTTCGGAATGCCGTTGCTCTGTAA";
 
     diff(s1, s2);
 
