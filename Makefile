@@ -11,9 +11,10 @@ TARGET = difflocator
 
 # Source files
 SRC = main.cpp
+HELPERS = Colors.h timer.h
 
 # Compile the program
-$(TARGET): $(SRC)
+$(TARGET): $(SRC) $(HELPERS)
 	$(CXX) $(CXXFLAGS) $(SRC) -o $(TARGET)
 
 # Clean target
