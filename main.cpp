@@ -33,14 +33,15 @@ string readFile(const string& filePath) {
     return buffer.str();
 }
 
+// Perform LCS on the two strings
 vector<vector<int>> LCS(const string &s1, const string &s2) {
     auto m { s1.size() };
     auto n { s2.size() };
 
     // Create a 2D array with the lcs lengths of the lines
     vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
-    for (int i = 1; i <= m; i++) {
-        for (int j = 1; j <= n; j++) {
+    for (int i = 1; i <= m; ++i) {
+        for (int j = 1; j <= n; ++j) {
             if (s1[i - 1] == s2[j - 1]) {
                 dp[i][j] = dp[i - 1][j - 1] + 1;
             } else {
@@ -54,12 +55,14 @@ vector<vector<int>> LCS(const string &s1, const string &s2) {
 
 // Print the result from the 2D DP table
 void printDiff(const string& s1, const string& s2, const vector<vector<int>>& dp) {
-    int i = s1.size(), j = s2.size();
+    auto i { s1.size() };
+    auto j { s2.size() };
 
     // The output of diff is in reverse order since it traverses from the bottom right of the LCS array
     // So using a stack to reverse the output while printing
     stack<string> diffStack;
 
+    // Traverse the table backwards
     while (i > 0 && j > 0) {
         // No difference so want to mark with ! so there is no coloring
         if (s1[i - 1] == s2[j - 1]) {
@@ -130,11 +133,11 @@ int main(int argc, char* argv[]) {
 
     timer time;
     vector<vector<int>> dp = LCS(s1, s2);
-    double LCSTime = time.getTime();
+    double LCSTime { time.getTime() };
     
     timer time2;
     printDiff(s1, s2, dp);
-    double printTime = time2.getTime();
+    double printTime { time2.getTime() };
 
     cout << "LCS Execution Time: " << LCSTime << " seconds\n";
     cout << "Print Execution Time: " << printTime << " seconds\n";
