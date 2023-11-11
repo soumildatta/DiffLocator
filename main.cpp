@@ -39,12 +39,15 @@ vector<vector<int>> LCS(const string &s1, const string &s2) {
     auto n { s2.size() };
 
     // Create a 2D array with the lcs lengths of the lines
+    // First row and column are 0s
     vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
     for (int i = 1; i <= m; ++i) {
         for (int j = 1; j <= n; ++j) {
             if (s1[i - 1] == s2[j - 1]) {
+                // Characters are the same, so add 1 to the value from the diagonal
                 dp[i][j] = dp[i - 1][j - 1] + 1;
             } else {
+                // Characters are different, so take the max of the value from the row above and the left column
                 dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
@@ -131,10 +134,12 @@ int main(int argc, char* argv[]) {
     string s1 = readFile(argv[1]);
     string s2 = readFile(argv[2]);
 
+    // Construct dp table
     timer time;
     vector<vector<int>> dp = LCS(s1, s2);
     double LCSTime { time.getTime() };
     
+    // Traverse the table to print the diff
     timer time2;
     printDiff(s1, s2, dp);
     double printTime { time2.getTime() };
