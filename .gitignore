@@ -4,6 +4,7 @@
 
 # Data
 *.txt
+*.pdf
 
 # Misc
 .vscode
